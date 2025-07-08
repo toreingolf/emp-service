@@ -1,16 +1,23 @@
 package net.toreingolf.emp_service.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.toreingolf.emp_service.domain.Emp;
 import net.toreingolf.emp_service.manager.EmpManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+
+import java.util.stream.Stream;
 
 import static net.toreingolf.emp_service.EmpTestUtils.BOND;
-import static net.toreingolf.emp_service.EmpTestUtils.EMPNO_BOND;
 import static net.toreingolf.emp_service.EmpTestUtils.EMPNO_SCOTT;
 import static net.toreingolf.emp_service.EmpTestUtils.SCOTT;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class EmpControllerTest {
 
     private static final String URI = "/employees/";
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,11 +43,16 @@ public class EmpControllerTest {
     @MockitoBean
     EmpManager empManagerMock;
 
-    @Test
-    void getEmp() throws Exception {
+    @BeforeEach
+    void setup() {
         when(empManagerMock.getEmp(EMPNO_SCOTT)).thenReturn(SCOTT);
-        mockMvc.perform(get(URI + EMPNO_SCOTT))
-                .andExpect(status().isOk());
+    }
+
+    @ParameterizedTest
+    @MethodSource("empAndExpectedResult")
+    void getEmp(Emp emp, ResultMatcher result) throws Exception {
+        mockMvc.perform(get(URI + emp.getEmpno()))
+                .andExpect(result);
     }
 
     @Test
@@ -58,21 +70,30 @@ public class EmpControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void updateEmp() throws Exception {
-        when(empManagerMock.getEmp(EMPNO_SCOTT)).thenReturn(SCOTT);
-        when(empManagerMock.updateEmp(any(), any())).thenReturn(SCOTT);
-        mockMvc.perform(put(URI + EMPNO_SCOTT)
+    @ParameterizedTest
+    @MethodSource("empAndExpectedResult")
+    void updateEmp(Emp emp, ResultMatcher result) throws Exception {
+        when(empManagerMock.updateEmp(any(), any())).thenReturn(emp);
+        mockMvc.perform(put(URI + emp.getEmpno())
                         .contentType(APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(SCOTT)))
-                .andExpect(status().isOk());
+                        .content(mapper.writeValueAsString(emp)))
+                .andExpect(result);
     }
 
-    @Test
-    void deleteEmp() throws Exception {
-        when(empManagerMock.getEmp(EMPNO_BOND)).thenReturn(BOND);
-        mockMvc.perform(delete(URI + EMPNO_BOND))
-                .andExpect(status().isOk());
-        verify(empManagerMock).deleteEmp(EMPNO_BOND);
+    @ParameterizedTest
+    @MethodSource("empAndExpectedResult")
+    void deleteEmp(Emp emp, ResultMatcher result) throws Exception {
+        mockMvc.perform(delete(URI + emp.getEmpno()))
+                .andExpect(result);
+        if (emp.getEmpno().equals(EMPNO_SCOTT)) {
+            verify(empManagerMock).deleteEmp(emp.getEmpno());
+        }
+    }
+
+    private static Stream<Arguments> empAndExpectedResult() {
+        return Stream.of(
+                Arguments.of(SCOTT, status().isOk()),
+                Arguments.of(BOND, status().isNotFound())
+        );
     }
 }
