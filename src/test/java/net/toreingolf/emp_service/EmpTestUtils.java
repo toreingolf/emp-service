@@ -7,6 +7,7 @@ public class EmpTestUtils {
     public static final Long EMPNO_BOND = 7L;
     public static final Long EMPNO_KING = 7839L;
     public static final Long EMPNO_SCOTT = 7788L;
+
     public static final Emp BOND = createEmp(EMPNO_BOND, "BOND");
     public static final Emp KING = createEmp(EMPNO_KING, "KING");
     public static final Emp SCOTT = createEmp(EMPNO_SCOTT, "SCOTT");
