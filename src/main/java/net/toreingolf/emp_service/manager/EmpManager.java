@@ -3,6 +3,7 @@ package net.toreingolf.emp_service.manager;
 import lombok.extern.slf4j.Slf4j;
 import net.toreingolf.emp_service.domain.Emp;
 import net.toreingolf.emp_service.persistence.EmpRepo;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class EmpManager {
 
     public List<Emp> getEmpList() {
         log.info("get empList");
-        return empRepo.findAll();
+        return empRepo.findAll(Sort.by(Sort.Direction.ASC, "ename"));
     }
 
     public Emp getEmp(Long empno) {
