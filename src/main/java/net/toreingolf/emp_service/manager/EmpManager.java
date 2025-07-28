@@ -14,13 +14,15 @@ public class EmpManager {
 
     private final EmpRepo empRepo;
 
+    public static Sort EMP_SORT = Sort.by(Sort.Direction.ASC, "ename");
+
     public EmpManager(EmpRepo empRepo) {
         this.empRepo = empRepo;
     }
 
     public List<Emp> getEmpList() {
         log.info("get empList");
-        return empRepo.findAll(Sort.by(Sort.Direction.ASC, "ename"));
+        return empRepo.findAll(EMP_SORT);
     }
 
     public Emp getEmp(Long empno) {

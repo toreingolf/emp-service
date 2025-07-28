@@ -12,6 +12,7 @@ import static net.toreingolf.emp_service.EmpTestUtils.EMPNO_KING;
 import static net.toreingolf.emp_service.EmpTestUtils.EMPNO_SCOTT;
 import static net.toreingolf.emp_service.EmpTestUtils.KING;
 import static net.toreingolf.emp_service.EmpTestUtils.SCOTT;
+import static net.toreingolf.emp_service.manager.EmpManager.EMP_SORT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -28,7 +29,7 @@ public class EmpManagerTest {
     @BeforeAll
     static void setup() {
         when(empRepoMock.findById(eq(EMPNO_SCOTT))).thenReturn(Optional.of(SCOTT));
-        when(empRepoMock.findAll()).thenReturn(List.of(SCOTT, KING));
+        when(empRepoMock.findAll(eq(EMP_SORT))).thenReturn(List.of(SCOTT, KING));
     }
 
     @Test
