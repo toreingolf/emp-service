@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import static net.toreingolf.emp_service.EmpTestUtils.BOND;
 import static net.toreingolf.emp_service.EmpTestUtils.EMPNO_SCOTT;
+import static net.toreingolf.emp_service.EmpTestUtils.NONAME;
 import static net.toreingolf.emp_service.EmpTestUtils.SCOTT;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -73,6 +74,15 @@ public class EmpControllerTest {
     @ParameterizedTest
     @MethodSource("empAndExpectedResult")
     void updateEmp(Emp emp, ResultMatcher result) throws Exception {
+        testUpdate(emp, result);
+    }
+
+    @Test
+    void updateEmpWithEmptyName() throws Exception {
+        testUpdate(NONAME, status().isBadRequest());
+    }
+
+    private void testUpdate(Emp emp, ResultMatcher result) throws Exception {
         when(empManagerMock.updateEmp(any(), any())).thenReturn(emp);
         mockMvc.perform(put(URI + emp.getEmpno())
                         .contentType(APPLICATION_JSON)

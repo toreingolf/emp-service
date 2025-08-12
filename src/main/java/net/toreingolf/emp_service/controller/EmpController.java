@@ -1,5 +1,6 @@
 package net.toreingolf.emp_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import net.toreingolf.emp_service.domain.Emp;
 import net.toreingolf.emp_service.manager.EmpManager;
@@ -44,13 +45,13 @@ public class EmpController {
     }
 
     @PostMapping("/")
-    public Emp createEmp(@RequestBody Emp emp) {
+    public Emp createEmp(@RequestBody @Valid Emp emp) {
         log.info("create emp {}", emp);
         return empManager.createEmp(emp);
     }
 
     @PutMapping("/{empno}")
-    public ResponseEntity<Emp> updateEmp(@PathVariable("empno") Long empno, @RequestBody Emp newEmp) {
+    public ResponseEntity<Emp> updateEmp(@PathVariable("empno") Long empno, @RequestBody @Valid Emp newEmp) {
         log.info("update emp {} with details from {}", empno, newEmp);
         Emp oldEmp = empManager.getEmp(empno);
         return oldEmp == null
