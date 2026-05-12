@@ -14,7 +14,7 @@ public class EmpManager {
 
     private final EmpRepo empRepo;
 
-    public static Sort EMP_SORT = Sort.by(Sort.Direction.ASC, "ename");
+    public static final Sort EMP_SORT = Sort.by(Sort.Direction.ASC, "ename");
 
     public EmpManager(EmpRepo empRepo) {
         this.empRepo = empRepo;

@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(EmpController.class)
 @AutoConfigureMockMvc
-public class EmpControllerTest {
+class EmpControllerTest {
 
     private static final String URI = "/employees/";
     private final ObjectMapper mapper = new ObjectMapper();
