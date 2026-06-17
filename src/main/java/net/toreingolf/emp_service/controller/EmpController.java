@@ -36,7 +36,7 @@ public class EmpController {
         this.empManager = empManager;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Emp>> getEmpList() {
         log.info("get empList");
         return ResponseEntity.ok().body(empManager.getEmpList());
@@ -51,7 +51,7 @@ public class EmpController {
                 : ResponseEntity.ok().body(emp);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public Emp createEmp(@RequestBody @Valid Emp emp) {
         log.info("create emp {}", emp);
         return empManager.createEmp(emp);

@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class EmpControllerTest {
 
-    private static final String URI = "/employees/";
+    private static final String URI = "/employees";
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
@@ -52,7 +52,7 @@ class EmpControllerTest {
     @ParameterizedTest
     @MethodSource("empAndExpectedResult")
     void getEmp(Emp emp, ResultMatcher result) throws Exception {
-        mockMvc.perform(get(URI + emp.getEmpno()))
+        mockMvc.perform(get(URI + "/" + emp.getEmpno()))
                 .andExpect(result);
     }
 
@@ -84,7 +84,7 @@ class EmpControllerTest {
 
     private void testUpdate(Emp emp, ResultMatcher result) throws Exception {
         when(empManagerMock.updateEmp(any(), any())).thenReturn(emp);
-        mockMvc.perform(put(URI + emp.getEmpno())
+        mockMvc.perform(put(URI + "/" + emp.getEmpno())
                         .contentType(APPLICATION_JSON)
                         .content(mapper.writeValueAsString(emp)))
                 .andExpect(result);
@@ -93,7 +93,7 @@ class EmpControllerTest {
     @ParameterizedTest
     @MethodSource("empAndExpectedResult")
     void deleteEmp(Emp emp, ResultMatcher result) throws Exception {
-        mockMvc.perform(delete(URI + emp.getEmpno()))
+        mockMvc.perform(delete(URI + "/" + emp.getEmpno()))
                 .andExpect(result);
         if (emp.getEmpno().equals(EMPNO_SCOTT)) {
             verify(empManagerMock).deleteEmp(emp.getEmpno());
